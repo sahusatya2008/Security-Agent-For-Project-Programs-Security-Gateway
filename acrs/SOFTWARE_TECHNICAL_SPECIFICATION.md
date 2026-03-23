@@ -2,7 +2,7 @@
 
 ## Software Technical Specification
 
-Document ID: SNSX-STS-001
+Document ID: SNSX-STS-002
 
 Version: 1.0.0
 
@@ -10,7 +10,7 @@ Status: Released for Company Submission
 
 Prepared For: Engineering, Application Security, Platform Operations, Governance, Audit
 
-Prepared By: SNSX Documentation Team
+Prepared By: SNSX Documentation Team, SAACH INDIA (Satya Narayan Sahu, Tathoi Mondal)
 
 Attribution Reference: Satya Narayan Sahu
 
