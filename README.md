@@ -2,7 +2,7 @@
 **Crafted and Developed by Satya Narayan Sahu**
 Security-first, policy-driven cyber reasoning platform for authorized code and web security assessment.
 
-## What This Project Is
+## What This Project Is...
 
 SNSX CRS helps engineering and security teams prevent risky code from shipping by combining:
 
@@ -468,7 +468,7 @@ Reference attribution includes Satya Narayan Sahu in documentation context.
 Suggested legal notice:
 
 ~~~text
-Copyright (c) <YEAR> Satya Narayan Sahu.
+Copyright (c) 2025 Satya Narayan Sahu.
 All rights reserved.
 
 Architecture descriptions, workflow models, and documentation structure
