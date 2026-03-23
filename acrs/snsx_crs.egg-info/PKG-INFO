@@ -1,0 +1,217 @@
+Metadata-Version: 2.4
+Name: snsx-crs
+Version: 0.1.0
+Summary: SNSX Cyber Reasoning System research prototype
+Requires-Python: >=3.11
+Description-Content-Type: text/markdown
+Requires-Dist: fastapi>=0.115.0
+Requires-Dist: uvicorn>=0.30.0
+Requires-Dist: pydantic>=2.8.0
+Requires-Dist: networkx>=3.3
+Requires-Dist: numpy>=2.0.0
+Provides-Extra: ml
+Requires-Dist: torch>=2.3.0; extra == "ml"
+Provides-Extra: symexec
+Requires-Dist: z3-solver>=4.13.0; extra == "symexec"
+
+# SNSX Cyber Reasoning System (SNSX CRS)
+
+SNSX CRS is a terminal-first, autonomous security scanning platform for authorized software and web targets.
+
+## Scope
+
+This repository provides:
+- A FastAPI orchestration backend
+- A terminal CLI (`snsx`) for file/folder and website scans
+- Static, binary, symbolic, and fuzzing agent scaffolds
+- ML vulnerability prediction scaffolding
+- Reinforcement-learning style strategy planner scaffold
+- Security knowledge graph module
+- Structured report generation
+- React dashboard starter
+
+## Safety Boundary
+
+Use only on software you own or are explicitly authorized to test.
+
+## Repository Layout
+
+- `api/` FastAPI entrypoint and HTTP routes
+- `core/` schemas, pipeline orchestration, report generation
+- `analysis/` static, binary, symbolic analysis engines
+- `fuzzing/` mutation and execution workflow
+- `ai_models/` feature extraction, model, training bootstrap
+- `exploit_planner/` strategy planner skeleton
+- `knowledge_graph/` vulnerability graph management
+- `sandbox/` isolated command execution helpers
+- `dashboard/frontend/` React + TypeScript UI starter
+
+## Quickstart (Backend)
+
+```bash
+cd acrs
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+uvicorn api.main:app --reload
+```
+
+Server: `http://127.0.0.1:8000`
+
+## Terminal CLI (Primary)
+
+Install once:
+
+```bash
+cd acrs
+python -m venv .venv
+source .venv/bin/activate
+pip install -e .
+```
+
+Scan local codebase:
+
+```bash
+snsx scan --path /absolute/path/to/code --language auto --output ./reports/latest.json
+```
+
+Scan website (authorized target):
+
+```bash
+snsx scan --url https://authorized-target.example --sharp-web --web-max-pages 50 --web-max-depth 2
+```
+
+Scan + auto-remediation (local path only):
+
+```bash
+snsx scan --path /absolute/path/to/code --auto-remediate
+```
+
+## Terminal Security Gate (No-Run-Until-Fixed)
+
+Fast file/line audit:
+
+```bash
+snsx audit --path /absolute/path/to/project --min-severity medium
+```
+
+Block project execution until findings are fixed:
+
+```bash
+snsx guard-run --path /absolute/path/to/project --min-severity medium -- npm run dev
+```
+
+Continuous watch mode:
+
+```bash
+snsx watch --path /absolute/path/to/project --interval 5 --min-severity medium
+```
+
+Generate zsh preexec hook snippet:
+
+```bash
+snsx print-zsh-hook --path /absolute/path/to/project --min-severity medium
+```
+
+Then append that output to your `~/.zshrc` to enforce guard checks before command execution in shell sessions.
+
+## One-Command Full Run
+
+Run backend + dashboard with automatic dependency installation and process cleanup:
+
+```bash
+cd acrs
+./master_run.sh
+```
+
+Optional:
+- `BACKEND_RELOAD=1 ./master_run.sh` to enable uvicorn auto-reload
+- `INSTALL_HEAVY_ML=1 ./master_run.sh` to attempt installing `torch`
+
+Behavior:
+- Installs core Python dependencies into `.venv` (`fastapi`, `uvicorn`, `pydantic`, `networkx`, `numpy`)
+- Installs optional `z3-solver` when available
+- Installs optional `torch` only when `INSTALL_HEAVY_ML=1` is set
+- Installs frontend dependencies with `npm install`
+- Kills existing processes using backend/frontend ports (`8000`, `5173`) and prior PID files
+- Starts backend and frontend, writing logs to `logs/backend.log` and `logs/frontend.log`
+- If Vite cannot run, automatically falls back to a lightweight static dashboard on the frontend port
+- If uvicorn cannot start, automatically falls back to a lightweight Python backend server with the same API endpoints
+
+## API Endpoints
+
+- `GET /health`
+- `GET /`
+- `POST /experiments/run`
+- `GET /experiments/{experiment_id}`
+- `POST /experiments/{experiment_id}/remediate`
+
+## Sharp Website Detection Option
+
+You can enable high-confidence website checks in `POST /experiments/run`:
+
+```json
+{
+  "software_path": "/path/to/authorized/source",
+  "website_url": "https://authorized-target.example",
+  "sharp_website_detection": true
+}
+```
+
+For website-only experiments, `software_path` is optional when `sharp_website_detection=true` and `website_url` is provided.
+
+Current sharp website checks:
+- missing critical security headers
+- insecure transport (HTTP)
+- password fields served over insecure transport
+- reflected input marker detection
+
+Advanced options:
+- `web_max_pages` (default `20`)
+- `web_max_depth` (default `1`)
+
+## Detailed Reports
+
+Each experiment now writes production-style report artifacts:
+- `reports/<experiment_id>/report.json`
+- `reports/<experiment_id>/report.md`
+
+API response includes:
+- `report.detected_languages` (auto-detected language inventory for file/folder scans)
+- `report.scanned_files`
+- `report.json_report_path`
+- `report.markdown_report_path`
+
+## Permissioned Auto-Remediation Flow
+
+1. Run an experiment with `POST /experiments/run`
+2. Submit remediation request with explicit permissions:
+   - `grant_file_access=true`
+   - `allow_write=true`
+   - `allowed_root_paths` including target root path
+3. System scans code files, detects languages by extension, and applies safe automatic fixes where supported.
+
+Example remediation payload:
+
+```json
+{
+  "grant_file_access": true,
+  "allow_write": true,
+  "allowed_root_paths": ["/path/to/authorized/target"],
+  "dry_run": false
+}
+```
+
+## Dashboard Quickstart
+
+```bash
+cd acrs/dashboard/frontend
+npm install
+npm run dev
+```
+
+## Notes
+
+- Binary analysis integrations (Ghidra/radare2) are represented as adapter points.
+- Symbolic execution uses optional Z3 when installed.
+- ML model training supports optional PyTorch.

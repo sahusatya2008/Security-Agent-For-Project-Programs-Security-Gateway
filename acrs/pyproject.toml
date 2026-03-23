@@ -1,0 +1,46 @@
+[build-system]
+requires = ["setuptools", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "snsx-crs"
+version = "0.1.0"
+description = "SNSX Cyber Reasoning System research prototype"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+  "fastapi>=0.115.0",
+  "uvicorn>=0.30.0",
+  "pydantic>=2.8.0",
+  "networkx>=3.3",
+  "numpy>=2.0.0",
+]
+
+[project.scripts]
+snsx = "core.cli:main"
+
+[project.optional-dependencies]
+ml = [
+  "torch>=2.3.0",
+]
+symexec = [
+  "z3-solver>=4.13.0",
+]
+
+[tool.setuptools]
+packages = [
+  "api",
+  "analysis",
+  "analysis.static_analysis",
+  "analysis.binary_analysis",
+  "analysis.symbolic_execution",
+  "analysis.language_detection",
+  "analysis.security_audit",
+  "analysis.web_analysis",
+  "ai_models",
+  "fuzzing",
+  "exploit_planner",
+  "knowledge_graph",
+  "sandbox",
+  "core",
+]

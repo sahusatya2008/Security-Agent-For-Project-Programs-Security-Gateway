@@ -1,0 +1,16 @@
+
+> snsx-crs-dashboard@0.1.0 dev
+> node ./node_modules/vite/bin/vite.js --host 127.0.0.1 --port 5173
+
+
+  VITE v5.4.21  ready in 574 ms
+
+  ➜  Local:   http://127.0.0.1:5173/
+10:55:38 PM [vite] hmr update /src/App.tsx
+10:56:33 PM [vite] hmr update /src/styles.css
+11:03:32 PM [vite] hmr update /src/App.tsx
+11:18:17 PM [vite] hmr update /src/App.tsx
+11:46:04 PM [vite] hmr update /src/App.tsx
+11:46:41 PM [vite] hmr update /src/styles.css
+11:49:14 PM [vite] hmr update /src/App.tsx
+11:54:29 PM [vite] hmr update /src/App.tsx

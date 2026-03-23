@@ -1,0 +1,106 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>SNSX CRS Dashboard (Fallback)</title>
+    <style>
+      body { font-family: system-ui, -apple-system, Segoe UI, sans-serif; margin: 2rem; background: #0e1525; color: #e7efff; }
+      .card { max-width: 900px; margin: auto; padding: 1rem 1.2rem; background: #18253f; border-radius: 12px; border: 1px solid #3e5c89; }
+      input, button { width: 100%; padding: 0.7rem; border-radius: 8px; border: 1px solid #4a6ea2; margin-top: 0.4rem; }
+      button { cursor: pointer; font-weight: 700; background: #4fc4b7; color: #042520; border: 0; margin-top: 1rem; }
+      pre { white-space: pre-wrap; background: #0e1525; padding: 0.75rem; border-radius: 8px; }
+      .row { display: flex; gap: 0.5rem; align-items: center; margin-top: 0.8rem; }
+      .row input[type="checkbox"] { width: auto; }
+    </style>
+  </head>
+  <body>
+    <section class="card">
+      <h1>SNSX CRS Dashboard (Fallback)</h1>
+      <p>Fallback UI active because Vite frontend is unavailable.</p>
+      <label>Software Path (optional for website scans)</label>
+      <input id="softwarePath" placeholder="/path/to/authorized/target" />
+      <label>Language</label>
+      <input id="language" value="python" />
+      <label>Website URL (optional)</label>
+      <input id="websiteUrl" placeholder="https://authorized-target.example" />
+      <div class="row">
+        <input id="sharpWeb" type="checkbox" />
+        <label for="sharpWeb">Enable Sharp Website Bug Detection</label>
+      </div>
+      <button id="runBtn">Run Experiment</button>
+
+      <div class="row">
+        <input id="grantAccess" type="checkbox" />
+        <label for="grantAccess">Allow file/folder access and write remediation changes</label>
+      </div>
+      <button id="remediateBtn">Run Auto Remediation</button>
+
+      <h3>Response</h3>
+      <pre id="out">No run yet.</pre>
+    </section>
+
+    <script>
+      const out = document.getElementById("out");
+      let latestExperiment = null;
+      let latestSoftware = null;
+
+      document.getElementById("runBtn").addEventListener("click", async () => {
+        const softwarePath = document.getElementById("softwarePath").value.trim();
+        const language = document.getElementById("language").value.trim() || "unknown";
+        const websiteUrl = document.getElementById("websiteUrl").value.trim();
+        const sharpWeb = document.getElementById("sharpWeb").checked;
+        if (!softwarePath && !(sharpWeb && websiteUrl)) {
+          out.textContent = "Provide software path, or enable sharp website detection with website URL.";
+          return;
+        }
+        out.textContent = "Running...";
+        try {
+          const res = await fetch("http://127.0.0.1:8000/experiments/run", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              software_path: softwarePath,
+              language,
+              website_url: websiteUrl || null,
+              sharp_website_detection: sharpWeb,
+              max_fuzz_iterations: 30
+            })
+          });
+          const data = await res.json();
+          latestExperiment = data.experiment_id || null;
+          latestSoftware = (data.report && data.report.software) || softwarePath;
+          out.textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          out.textContent = String(err);
+        }
+      });
+
+      document.getElementById("remediateBtn").addEventListener("click", async () => {
+        if (!latestExperiment) {
+          out.textContent = "Run experiment first.";
+          return;
+        }
+        const softwarePath = document.getElementById("softwarePath").value.trim();
+        const grant = document.getElementById("grantAccess").checked;
+        out.textContent = "Running remediation...";
+        try {
+          const res = await fetch(`http://127.0.0.1:8000/experiments/${latestExperiment}/remediate`, {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({
+              grant_file_access: grant,
+              allow_write: grant,
+              allowed_root_paths: [softwarePath, latestSoftware].filter(Boolean),
+              dry_run: false
+            })
+          });
+          const data = await res.json();
+          out.textContent = JSON.stringify(data, null, 2);
+        } catch (err) {
+          out.textContent = String(err);
+        }
+      });
+    </script>
+  </body>
+</html>

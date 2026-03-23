@@ -1,0 +1,119 @@
+{
+  "experiment_id": "5f142495-9020-4aaf-b4ef-6411e9eb4c0d",
+  "started_at": "2026-03-08T18:03:15.072848Z",
+  "finished_at": "2026-03-08T18:03:15.131287Z",
+  "artifacts": [
+    {
+      "module": "language_profile",
+      "summary": "Language profiling scanned 14 files across 2 language buckets.",
+      "data": {
+        "files_scanned": 14,
+        "known_language_files": 7,
+        "languages": {
+          "python": 7,
+          "unknown": 7
+        }
+      }
+    },
+    {
+      "module": "static_analysis",
+      "summary": "Static analysis scanned 7 Python files, found 0 candidate issues.",
+      "data": {
+        "scanned_path": "/Users/drhacker/Documents/Security Agent AI for Bug Bounty in Websites/acrs/core",
+        "python_files_found": 7,
+        "python_files_parsed": 7,
+        "finding_count": 0
+      }
+    },
+    {
+      "module": "symbolic_execution",
+      "summary": "Symbolic execution explored candidate constraints with Z3.",
+      "data": {
+        "z3_available": true,
+        "constraints_checked": 1,
+        "static_context": {
+          "scanned_path": "/Users/drhacker/Documents/Security Agent AI for Bug Bounty in Websites/acrs/core",
+          "python_files_found": 7,
+          "python_files_parsed": 7,
+          "finding_count": 0
+        }
+      }
+    },
+    {
+      "module": "fuzzing",
+      "summary": "Fuzzing completed 2 iterations with 0 crashes observed.",
+      "data": {
+        "iterations": 2,
+        "crash_count": 0,
+        "unique_failures": 0,
+        "harness_used": false
+      }
+    },
+    {
+      "module": "ml_prediction",
+      "summary": "Predicted dominant pattern: low-risk",
+      "data": {
+        "model": "heuristic",
+        "predicted_label": "low-risk",
+        "risk_score": 0.0,
+        "summary": "Predicted dominant pattern: low-risk"
+      }
+    },
+    {
+      "module": "exploit_strategy",
+      "summary": "Planner recommends: coverage-guided-exploration",
+      "data": {
+        "state": {
+          "coverage": 1.0,
+          "crashes": 0,
+          "static_findings": 0
+        },
+        "recommended_action": "coverage-guided-exploration",
+        "reward_function": {
+          "new_coverage": 1,
+          "vulnerability_discovery": 10,
+          "redundant_test_penalty": -1
+        },
+        "summary": "Planner recommends: coverage-guided-exploration"
+      }
+    }
+  ],
+  "findings": [
+    {
+      "title": "Feasible overflow-like condition",
+      "vulnerability_type": "bounds-check",
+      "severity": "medium",
+      "location": "symbolic:path-0",
+      "evidence": "Found satisfiable condition user_input > buffer_size",
+      "confidence": 0.67
+    }
+  ],
+  "report": {
+    "software": "/Users/drhacker/Documents/Security Agent AI for Bug Bounty in Websites/acrs/core",
+    "generated_at": "2026-03-08T18:03:15.131236Z",
+    "findings": [
+      {
+        "title": "Feasible overflow-like condition",
+        "vulnerability_type": "bounds-check",
+        "severity": "medium",
+        "location": "symbolic:path-0",
+        "evidence": "Found satisfiable condition user_input > buffer_size",
+        "confidence": 0.67
+      }
+    ],
+    "risk_summary": "Detected 1 findings (critical=0, high=0, medium=1).",
+    "mitigation_strategies": [
+      "Apply strict bounds checking for memory and buffer operations.",
+      "Avoid unsafe dynamic execution (`eval`, `exec`) and sanitize untrusted input.",
+      "Enable compiler hardening, sanitizer builds, and continuous fuzzing in CI.",
+      "Harden parsing logic and add negative tests for malformed input."
+    ],
+    "detected_languages": {
+      "python": 7,
+      "unknown": 7
+    },
+    "scanned_files": 14,
+    "json_report_path": null,
+    "markdown_report_path": null
+  }
+}

@@ -1,0 +1,11 @@
+fastapi>=0.115.0
+uvicorn>=0.30.0
+pydantic>=2.8.0
+networkx>=3.3
+numpy>=2.0.0
+
+[ml]
+torch>=2.3.0
+
+[symexec]
+z3-solver>=4.13.0
